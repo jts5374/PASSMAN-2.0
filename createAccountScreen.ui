@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
+    <width>314</width>
     <height>386</height>
    </rect>
   </property>
@@ -184,6 +184,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>usernameInput</tabstop>
+  <tabstop>passwordInput</tabstop>
+  <tabstop>confirmpasswordInput</tabstop>
+  <tabstop>createaccountButton</tabstop>
+  <tabstop>gobackButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

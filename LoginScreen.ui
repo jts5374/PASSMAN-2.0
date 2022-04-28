@@ -6,32 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>298</width>
-    <height>308</height>
+    <width>300</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="1">
-    <widget class="QPushButton" name="loginButton">
-     <property name="font">
-      <font>
-       <pointsize>15</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Log in</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QLineEdit" name="usernametextbox">
+     <widget class="QLineEdit" name="usernameInput">
       <property name="font">
        <font>
         <pointsize>16</pointsize>
@@ -68,27 +56,15 @@
      </widget>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="PassManLabel">
+   <item row="3" column="1">
+    <widget class="QPushButton" name="loginButton">
      <property name="font">
       <font>
-       <family>Source Code Pro</family>
-       <pointsize>50</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <pointsize>15</pointsize>
       </font>
      </property>
      <property name="text">
-      <string>PassMan</string>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::AutoText</enum>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <string>Log in</string>
      </property>
     </widget>
    </item>
@@ -139,6 +115,30 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="PassManLabel">
+     <property name="font">
+      <font>
+       <family>Source Code Pro</family>
+       <pointsize>50</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>PassMan</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="1">
     <widget class="QPushButton" name="createaccountButton">
      <property name="font">
@@ -163,10 +163,22 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="1">
+    <widget class="QPushButton" name="pushButton">
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Delete Account</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>usernametextbox</tabstop>
+  <tabstop>usernameInput</tabstop>
   <tabstop>passwordInput</tabstop>
   <tabstop>loginButton</tabstop>
  </tabstops>

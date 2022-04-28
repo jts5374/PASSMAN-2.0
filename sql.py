@@ -95,7 +95,7 @@ class Database:
         WHERE Username = ?
         """, (username,))
         return query.fetchone()
-    #------------
+    #------------Export function-----------
 
     def createInsertStatement(self, masteraccountData, upPasswordData):
         self.cur.execute("""
@@ -112,4 +112,14 @@ class Database:
             VALUES (?, ?, ?, ?)
             """, (site[0], site[1], site[2], site[3]))
         self.con.commit()
+
+    #----------Check if User Exists----------
+    def user_exists(self, username):
+        userexists = """
+        Select Exists(
+            Select * from accounts
+            Where username = ?)
+        """
+        query = self.cur.execute(userexists, (username,))
+        return query.fetchone()[0]
 

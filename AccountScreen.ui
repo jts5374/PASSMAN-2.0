@@ -7,13 +7,40 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>326</height>
+    <height>355</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="0">
+    <widget class="QPushButton" name="addaccountButton">
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Add New Site Password</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLineEdit" name="searchBar">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>Search</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="AccountLabel">
      <property name="font">
@@ -35,42 +62,6 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLineEdit" name="searchBar">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>Search</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QListView" name="useraccountsList">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QPushButton" name="addaccountButton">
-     <property name="font">
-      <font>
-       <pointsize>15</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Add New Site Password</string>
      </property>
     </widget>
    </item>
@@ -113,11 +104,13 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QListWidget" name="useraccountsList"/>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>searchBar</tabstop>
-  <tabstop>useraccountsList</tabstop>
   <tabstop>addaccountButton</tabstop>
  </tabstops>
  <resources/>
