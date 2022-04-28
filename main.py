@@ -39,6 +39,7 @@ class LoginScreen(QDialog):
         dbpath = filedialog.askdirectory()
         db.setPath(dbpath)
         db.initialize_db()
+        db.setConnection()
 #-------------End Login Screen----------------------------
 
 
@@ -128,6 +129,7 @@ class AddAccountScreen(QDialog):
 if __name__=='__main__':
     db = sql.Database()
     db.initialize_db()
+    db.setConnection()
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
     loginscreen = LoginScreen()

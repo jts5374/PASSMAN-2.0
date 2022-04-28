@@ -17,8 +17,7 @@ class Database:
         self.con = sqlite3.connect(os.path.join(self.dbpath, 'passMan.db'))
         self.cur = self.con.cursor()
 
-    def initialize_db(self):
-        
+    def initialize_db(self):        
         self.cur.execute("""
         create table if not exists accounts(   
             UserName varchar(255) Primary Key ,
