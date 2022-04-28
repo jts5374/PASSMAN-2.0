@@ -27,7 +27,11 @@ class LoginScreen(QDialog):
         self.loginButton.clicked.connect(self.clickLogin)
         self.createaccountButton.clicked.connect(self.gotoCreateAccount)
         self.useexternalaccountButton.clicked.connect(self.getExternalDB)
+    
     def clickLogin(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+        ActiveUser.login(username, password)
         acc = AccountScreen()
         widget.addWidget(acc)
         widget.setCurrentIndex(widget.currentIndex() + 1)
@@ -91,10 +95,13 @@ class AccountScreen(QDialog):
         widget.removeWidget(self)
 
     def ExportAccount(self):
+        masteraccount = db.getMasterAccount(ActiveUser.getUser())
+        userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
         export = sql.Database()
         tkinter.Tk().withdraw()
         dbpath = filedialog.askdirectory()
         export.setPath(dbpath)
+        export.createInsertStatement(masteraccount, userpasswords)
 
         
 #---------------End Account Screen------------------------
