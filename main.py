@@ -5,6 +5,8 @@ import PyQt5
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QApplication
+import tkinter
+from tkinter import filedialog
 import pyperclip
 import sql
 
@@ -19,7 +21,7 @@ class LoginScreen(QDialog):
         self.errormessageLabel.setVisible(False)
         self.loginButton.clicked.connect(self.clickLogin)
         self.createaccountButton.clicked.connect(self.gotoCreateAccount)
-
+        self.useexternalaccountButton.clicked.connect(self.getExternalDB)
     def clickLogin(self):
         acc = AccountScreen()
         widget.addWidget(acc)
@@ -31,6 +33,12 @@ class LoginScreen(QDialog):
         widget.addWidget(ca)
         widget.setCurrentIndex(widget.currentIndex() + 1)
         widget.removeWidget(self)
+
+    def getExternalDB(self):
+        tkinter.Tk().withdraw()
+        dbpath = filedialog.askdirectory()
+        db.setPath(dbpath)
+        db.initialize_db()
 #-------------End Login Screen----------------------------
 
 
@@ -119,8 +127,7 @@ class AddAccountScreen(QDialog):
 
 if __name__=='__main__':
     db = sql.Database()
-    dbp = db.getPath()
-    db.initialize_db(dbp)
+    db.initialize_db()
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
     loginscreen = LoginScreen()
