@@ -9,6 +9,11 @@ import tkinter
 from tkinter import filedialog
 import pyperclip
 import sql
+import useraccount as ua
+
+
+
+ActiveUser = ua.User()
 
 
 #---------------------Login Screen---------------------------------------
@@ -71,7 +76,7 @@ class AccountScreen(QDialog):
         loadUi((os.path.join(os.getcwd(), 'AccountScreen.ui')), self)        
         self.logoutButton.clicked.connect(self.logout)
         self.addaccountButton.clicked.connect(self.gotoAddAccount)
-    
+        self.exportaccountButton.clicked.connect(self.ExportAccount)
     
     def logout(self):
         li = LoginScreen()
@@ -84,6 +89,14 @@ class AccountScreen(QDialog):
         widget.addWidget(aa)
         widget.setCurrentIndex(widget.currentIndex() + 1)
         widget.removeWidget(self)
+
+    def ExportAccount(self):
+        export = sql.Database()
+        tkinter.Tk().withdraw()
+        dbpath = filedialog.askdirectory()
+        export.setPath(dbpath)
+
+        
 #---------------End Account Screen------------------------
 
 
