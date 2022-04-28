@@ -5,8 +5,8 @@ import PyQt5
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDialog, QApplication
-import os
 import pyperclip
+import sql
 
 
 #---------------------Login Screen---------------------------------------
@@ -118,6 +118,9 @@ class AddAccountScreen(QDialog):
 
 
 if __name__=='__main__':
+    db = sql.Database()
+    dbp = db.getPath()
+    db.initialize_db(dbp)
     app = QApplication(sys.argv)
     widget = QtWidgets.QStackedWidget()
     loginscreen = LoginScreen()
