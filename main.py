@@ -5,9 +5,11 @@ import PyQt5
 from PyQt5 import QtGui
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QDialog, QApplication, QListWidget, QMenu
+from PyQt5.QtCore import QEvent
 import tkinter
-from tkinter import filedialog
+from tkinter import EventType, filedialog
 import pyperclip
 import sql
 import useraccount as ua
@@ -111,8 +113,10 @@ class AccountScreen(QDialog):
         self.exportaccountButton.clicked.connect(self.ExportAccount)     
         userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
         for up in userpasswords:
-            self.useraccountsList.addItem(f'Site: {up[1]} Username: {up[2]}')
-        
+            self.useraccountsList.addItem(f'Site: {up[1]}\nUsername: {up[2]}')
+        self.useraccountsList.installEventFilter(self)
+        self.searchBar.textChanged.connect(self.Search)
+
     def logout(self):
         ActiveUser.logout()
         li = LoginScreen()
@@ -134,8 +138,22 @@ class AccountScreen(QDialog):
         dbpath = filedialog.askdirectory()
         export.setPath(dbpath)
         export.createInsertStatement(masteraccount, userpasswords)
+    
+    def Search(self):
+        searchterm = self.searchBar.text()
+        for i in range(self.useraccountsList.count()):
+            if searchterm in self.useraccountsList.item(i).text():
+                self.useraccountsList.item(i).setHidden(False)
+            else:
+                self.useraccountsList.item(i).setHidden(True)
 
-        
+    def eventFilter(self, source, event):
+        if event.type() == QEvent.MouseButtonPress:
+            if event.button() == QtCore.Qt.RightButton:
+                print('working')
+                return True
+
+        return super().eventFilter(source, event)
 #---------------End Account Screen------------------------
 
 
