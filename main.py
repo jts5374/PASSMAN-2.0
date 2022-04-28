@@ -112,8 +112,9 @@ class AccountScreen(QDialog):
         userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
         for up in userpasswords:
             self.useraccountsList.addItem(f'Site: {up[1]} Username: {up[2]}')
-
+        
     def logout(self):
+        ActiveUser.logout()
         li = LoginScreen()
         widget.addWidget(li)
         widget.setCurrentIndex(widget.currentIndex() + 1)
