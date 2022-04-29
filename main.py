@@ -9,7 +9,7 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QApplication, QListWidget, QMenu
 from PyQt5.QtCore import QEvent
 import tkinter
-from tkinter import EventType, filedialog
+from tkinter import filedialog
 import pyperclip
 import sql
 import useraccount as ua
@@ -107,14 +107,18 @@ class CreateAccountScreen(QDialog):
 class AccountScreen(QDialog):
     def __init__(self) :
         super(AccountScreen, self).__init__()
-        loadUi((os.path.join(os.getcwd(), 'AccountScreen.ui')), self)        
+        loadUi((os.path.join(os.getcwd(), 'AccountScreen.ui')), self)
+        self.welcomeLabel.setText(f"{ActiveUser.getUser()}")        
         self.logoutButton.clicked.connect(self.logout)
         self.addaccountButton.clicked.connect(self.gotoAddAccount)
         self.exportaccountButton.clicked.connect(self.ExportAccount)     
-        userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
-        for up in userpasswords:
+        self.userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
+        print(self.userpasswords)
+        for i,up in enumerate(self.userpasswords):
             self.useraccountsList.addItem(f'Site: {up[1]}\nUsername: {up[2]}')
-        self.useraccountsList.installEventFilter(self)
+            
+        
+        self.useraccountsList.itemClicked.connect(self.itemclick)
         self.searchBar.textChanged.connect(self.Search)
 
     def logout(self):
@@ -137,6 +141,8 @@ class AccountScreen(QDialog):
         tkinter.Tk().withdraw()
         dbpath = filedialog.askdirectory()
         export.setPath(dbpath)
+        export.initialize_db()
+        export.setConnection()
         export.createInsertStatement(masteraccount, userpasswords)
     
     def Search(self):
@@ -147,13 +153,11 @@ class AccountScreen(QDialog):
             else:
                 self.useraccountsList.item(i).setHidden(True)
 
-    def eventFilter(self, source, event):
-        if event.type() == QEvent.MouseButtonPress:
-            if event.button() == QtCore.Qt.RightButton:
-                print('working')
-                return True
-
-        return super().eventFilter(source, event)
+    def itemclick(self):
+        idx = self.useraccountsList.currentRow()
+        epw = self.userpasswords[idx][3]
+        pw = enc.decrypt_userpassword_password(epw, ActiveUser.getDK())
+        print(pw)
 #---------------End Account Screen------------------------
 
 
@@ -166,7 +170,7 @@ class AddAccountScreen(QDialog):
         loadUi((os.path.join(os.getcwd(), 'AddAccountScreen.ui')), self)
         self.errormessageLabel.setVisible(False)
         value = self.passwordlengthSlider.value()
-        self.passwordlengthDisplay.display(value)
+        self.passwordlengthLabel.setText(f"Password Length: {value}")
         self.gobackButton.clicked.connect(self.goBack)
         self.enablepasswordgencheckBox.stateChanged.connect(self.enablePWGen)        
         self.passwordlengthSlider.valueChanged.connect(self.updatePasswordLengthDisplay)
@@ -189,14 +193,14 @@ class AddAccountScreen(QDialog):
             self.errormessageLabel.setText("Passwords do not match")
             self.errormessageLabel.setVisible(True)
         else:
-            epw = enc.encrypt_userpasswords_password(pw, ActiveUser.getDK())
+            epw = enc.encrypt_userpasswords_password(pw, ActiveUser.decryptkey)
             db.insertIntoUserPasswords(ActiveUser.getUser(), site, username, epw)
             self.goBack()
 
 
     def updatePasswordLengthDisplay(self):
         value = self.passwordlengthSlider.value()
-        self.passwordlengthDisplay.display(value)
+        self.passwordlengthLabel.setText(f"Password Length: {value}")
 
 
     def goBack(self):

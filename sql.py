@@ -1,3 +1,4 @@
+from doctest import master
 import sqlite3 
 import os
 
@@ -98,19 +99,20 @@ class Database:
     #------------Export function-----------
 
     def createInsertStatement(self, masteraccountData, upPasswordData):
-        self.cur.execute("""
-        Insert into Accounts(UserName, MasterPassword)
-        VALUES (?, ?)
-        """, (masteraccountData[0], masteraccountData[1]))
+        if not self.user_exists(masteraccountData[0]):
+            self.cur.execute("""
+            Insert into Accounts(UserName, MasterPassword)
+            VALUES (?, ?)
+            """, (masteraccountData[0], masteraccountData[1]))
 
-        self.cur.execute("""
-        
-        """)
+            self.cur.execute("""
+            
+            """)
         for site in upPasswordData:
             self.cur.execute("""
             insert into userpasswords (site, siteusername, password, masterusername)
             VALUES (?, ?, ?, ?)
-            """, (site[0], site[1], site[2], site[3]))
+            """, (site[1], site[2], site[3], site[4]))
         self.con.commit()
 
     #----------Check if User Exists----------
