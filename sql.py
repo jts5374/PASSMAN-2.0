@@ -80,7 +80,10 @@ class Database:
         FROM Accounts
         WHERE UserName = ? 
         """,(username, ))
-        return query.fetchone()[0]
+        try:
+            return query.fetchone()[0]
+        except:
+            return False
 
     def selectuserPasswordsData(self, username):
         query = self.cur.execute("""
@@ -97,6 +100,29 @@ class Database:
         WHERE Username = ?
         """, (username,))
         return query.fetchone()
+
+    def selectsiteInfo(self, idx):
+        query = self.cur.execute("""
+        Select *
+        From userpasswords
+        where AccountEntry = ?        
+        """, (idx, ))
+        return query.fetchone()
+
+
+
+    #-----------Update Functions------------
+
+
+    def updateSiteInfo(self, idx, pw):
+        query = self.cur.execute("""
+        Update userpasswords
+        SET Password = ?
+        WHERE AccountEntry = ?
+        """, (pw, idx))
+        self.con.commit()
+
+
     #------------Export function-----------
 
     def createInsertStatement(self, masteraccountData, upPasswordData):

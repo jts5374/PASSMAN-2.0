@@ -164,7 +164,7 @@
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="deleteaccountButton">
      <property name="font">
       <font>
        <pointsize>15</pointsize>

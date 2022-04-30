@@ -14,33 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0">
-    <widget class="QPushButton" name="addaccountButton">
-     <property name="font">
-      <font>
-       <pointsize>15</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Add New Site Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLineEdit" name="searchBar">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>Search</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="AccountLabel">
      <property name="font">
@@ -65,6 +38,33 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="0">
+    <widget class="QPushButton" name="logoutButton">
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Log out</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLineEdit" name="searchBar">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>Search</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="welcomeLabel">
      <property name="font">
@@ -80,19 +80,16 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QPushButton" name="logoutButton">
+   <item row="4" column="0">
+    <widget class="QListWidget" name="useraccountsList">
      <property name="font">
       <font>
-       <pointsize>15</pointsize>
+       <pointsize>12</pointsize>
       </font>
-     </property>
-     <property name="text">
-      <string>Log out</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QPushButton" name="exportaccountButton">
      <property name="font">
       <font>
@@ -104,12 +101,22 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QListWidget" name="useraccountsList">
+   <item row="5" column="0">
+    <widget class="QPushButton" name="addaccountButton">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>15</pointsize>
       </font>
+     </property>
+     <property name="text">
+      <string>Add New Site Password</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Click account to copy password, Right Click for more Options</string>
      </property>
     </widget>
    </item>

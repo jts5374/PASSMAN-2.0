@@ -19,8 +19,14 @@ import encryption as enc
 ActiveUser = ua.User()
 
 width, height = 300,700
+def NewScreen (currentscreen, newscreen):
+    widget.addWidget(newscreen)
+    widget.setCurrentIndex(widget.currentIndex() + 1)
+    widget.removeWidget(currentscreen)
 #---------------------Login Screen---------------------------------------
 #Starting screen This is where users will log into their main account
+
+
 
 class LoginScreen(QDialog):
     def __init__(self) :
@@ -30,7 +36,9 @@ class LoginScreen(QDialog):
         self.loginButton.clicked.connect(self.clickLogin)
         self.createaccountButton.clicked.connect(self.gotoCreateAccount)
         self.useexternalaccountButton.clicked.connect(self.getExternalDB)
-        self.setMinimumSize(width, height-400)
+        self.deleteaccountButton.clicked.connect(self.gotoDeleteAccount)
+        self.setFixedSize(width, height-400)
+        self.setContentsMargins
 
 
     def clickLogin(self):
@@ -56,9 +64,7 @@ class LoginScreen(QDialog):
 
     def gotoCreateAccount(self):
         ca = CreateAccountScreen()
-        widget.addWidget(ca)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        widget.removeWidget(self)
+        NewScreen(self, ca)
 
     def getExternalDB(self):
         tkinter.Tk().withdraw()
@@ -66,6 +72,11 @@ class LoginScreen(QDialog):
         db.setPath(dbpath)
         db.initialize_db()
         db.setConnection()
+
+    def gotoDeleteAccount(self):
+        da = DeleteAccountScreen()
+        NewScreen(self, da)
+
 #-------------End Login Screen----------------------------
 
 
@@ -83,9 +94,7 @@ class CreateAccountScreen(QDialog):
 
     def goBack(self):
         li = LoginScreen()
-        widget.addWidget(li)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        widget.removeWidget(self)
+        NewScreen(self, li)
 
     def createAccount(self):
         username = self.usernameInput.text()
@@ -124,11 +133,12 @@ class AccountScreen(QDialog):
             item = QtWidgets.QListWidgetItem()
             item.setData(QtCore.Qt.UserRole, i)
             item.setText(f'Site: {up[1]}\nUsername: {up[2]}')
+            item.setTextAlignment(Qt.AlignHCenter)
             self.useraccountsList.addItem(item)
             
             
         
-        # self.useraccountsList.itemClicked.connect(self.copyPassword)
+        self.useraccountsList.itemClicked.connect(self.copyPassword)
         self.searchBar.textChanged.connect(self.Search)
 
         self.useraccountsList.installEventFilter(self)
@@ -153,15 +163,11 @@ class AccountScreen(QDialog):
     def logout(self):
         ActiveUser.logout()
         li = LoginScreen()
-        widget.addWidget(li)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        widget.removeWidget(self)
+        NewScreen(self, li)
 
     def gotoAddAccount(self):
         aa = AddAccountScreen()
-        widget.addWidget(aa)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        widget.removeWidget(self)
+        NewScreen(self, aa)
 
     def ExportAccount(self):
         masteraccount = db.getMasterAccount(ActiveUser.getUser())
@@ -188,16 +194,17 @@ class AccountScreen(QDialog):
         pyperclip.copy(enc.decrypt_userpassword_password(epw, ActiveUser.decryptkey))
 
     def changePassword(self):
-        pass
+        idx = self.useraccountsList.currentRow()
+        dbidx = self.userpasswords[idx][0]
+        aa = AddAccountScreen(dbidx)
+        NewScreen(self, aa)
 
     def deletePassword(self):
         idx = self.useraccountsList.currentRow()
         dbidx = self.userpasswords[idx][0]
         db.deleteUserPasswordsSite(dbidx)
         refresh = AccountScreen()
-        widget.addWidget(refresh)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        widget.removeWidget(self)
+        NewScreen(self, refresh)
         
         
 #---------------End Account Screen------------------------
@@ -207,9 +214,10 @@ class AccountScreen(QDialog):
 #This is where user will add passwords to their main user account
 
 class AddAccountScreen(QDialog):
-    def __init__(self) :
+    def __init__(self, idx=None) :
         super(AddAccountScreen, self).__init__()
         loadUi((os.path.join(os.getcwd(), 'AddAccountScreen.ui')), self)
+        self.idx = idx
         self.errormessageLabel.setVisible(False)
         value = self.passwordlengthSlider.value()
         self.passwordlengthLabel.setText(f"Password Length: {value}")
@@ -217,10 +225,20 @@ class AddAccountScreen(QDialog):
         self.enablepasswordgencheckBox.stateChanged.connect(self.enablePWGen)
         self.showpasswordcheckBox.stateChanged.connect(self.showPW)        
         self.passwordlengthSlider.valueChanged.connect(self.updatePasswordLengthDisplay)
-        self.addaccountButton.clicked.connect(self.AddAccount)
+        
         self.generatepasswordButton.clicked.connect(self.generatePassword)
         self.setMinimumSize(width, height)
-
+        if self.idx is not None:
+            data = db.selectsiteInfo(self.idx)
+            self.screenLabel.setText('Update Site Password')
+            self.sitenameInput.setText(data[1])
+            self.usernameInput.setText(data[2])
+            self.sitenameInput.setReadOnly(True)
+            self.usernameInput.setReadOnly(True)
+            self.addaccountButton.setText('Update Account')
+            self.addaccountButton.clicked.connect(self.UpdateAccount)
+        else:
+            self.addaccountButton.clicked.connect(self.AddAccount)
 
     def generatePassword(self):
         containsUppers = self.uppercasecheckBox.isChecked()
@@ -260,6 +278,18 @@ class AddAccountScreen(QDialog):
             db.insertIntoUserPasswords(ActiveUser.getUser(), site, username, epw)
             self.goBack()
 
+    def UpdateAccount(self):
+        pw = self.passwordInput.text()
+        cpw = self.confirmpasswordInput.text()
+        if pw != cpw:
+            self.errormessageLabel.setText("Passwords do not match")
+            self.errormessageLabel.setVisible(True)
+        else:
+            epw = enc.encrypt_userpasswords_password(pw, ActiveUser.decryptkey)
+            db.updateSiteInfo(self.idx, epw)
+            acc = AccountScreen()
+            NewScreen(self, acc)
+            
 
     def updatePasswordLengthDisplay(self):
         value = self.passwordlengthSlider.value()
@@ -268,14 +298,42 @@ class AddAccountScreen(QDialog):
 
     def goBack(self):
         acc = AccountScreen()
-        widget.addWidget(acc)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
-        widget.removeWidget(self)
+        NewScreen(self, acc)
 
     
 
 #---------------End Add Account Screen---------------------------------    
-    
+
+
+#----------------Delete Account Screen-----------------------------------
+class DeleteAccountScreen(QDialog):
+    def __init__(self) :
+        super(DeleteAccountScreen, self).__init__()
+        loadUi((os.path.join(os.getcwd(), 'DeleteAccountScreen.ui')), self)   
+        self.deleteButton.clicked.connect(self.deleteAccount)
+        self.errormessageLabel.setVisible(False)
+
+    def deleteAccount(self):
+        username = self.usernameInput.text()
+        pw = self.passwordInput.text()
+        cpw = self.confirmpasswordInput.text()
+        dbpw = db.selectPassword(username)
+        self.setMaximumSize(width, height-400)
+        if pw == cpw:
+            if enc.check_password(pw, dbpw):
+                db.deleteUserAccount(username)
+                login = LoginScreen()
+                NewScreen(self, login)
+            else:
+                self.errormessageLabel.setText("Incorrect Password")
+                self.errormessageLabel.setVisible(True)
+        else:
+            self.errormessageLabel.setText("Passwords do not Match")
+            self.errormessageLabel.setVisible(True)
+
+
+
+#------------------End Delete Account Screen-------------------------
 
 
 if __name__=='__main__':
