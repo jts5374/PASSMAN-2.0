@@ -19,5 +19,5 @@ def encrypt_userpasswords_password(plain_text_password, key):
     return pyDes.triple_des(key).encrypt(plain_text_password, padmode=2)
 
 def decrypt_userpassword_password(encryptedpassword, key):
-    return pyDes.triple_des(key).decrypt(encryptedpassword, padmode = 2).decode('unicode_escape')
+    return pyDes.triple_des(key).decrypt(encryptedpassword, padmode = 2).decode()
 

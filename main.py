@@ -35,10 +35,11 @@ class LoginScreen(QDialog):
         username = self.usernameInput.text()
         pw = self.passwordInput.text()
         
+        
         if db.user_exists(username):
             dbpw = db.selectPassword(username)
             if enc.check_password(pw, dbpw):
-                ActiveUser.login(username, pw) 
+                ActiveUser.login(username, pw, dbpw) 
                     
                 acc = AccountScreen()
                 widget.addWidget(acc)
@@ -113,14 +114,20 @@ class AccountScreen(QDialog):
         self.addaccountButton.clicked.connect(self.gotoAddAccount)
         self.exportaccountButton.clicked.connect(self.ExportAccount)     
         self.userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
-        print(self.userpasswords)
+        
         for i,up in enumerate(self.userpasswords):
-            self.useraccountsList.addItem(f'Site: {up[1]}\nUsername: {up[2]}')
+            item = QtWidgets.QListWidgetItem()
+            item.setData(QtCore.Qt.UserRole, i)
+            item.setText(f'Site: {up[1]}\nUsername: {up[2]}')
+            self.useraccountsList.addItem(item)
+            
             
         
-        self.useraccountsList.itemClicked.connect(self.itemclick)
+        self.useraccountsList.itemClicked.connect(self.copyPassword)
         self.searchBar.textChanged.connect(self.Search)
+        
 
+    
     def logout(self):
         ActiveUser.logout()
         li = LoginScreen()
@@ -153,11 +160,11 @@ class AccountScreen(QDialog):
             else:
                 self.useraccountsList.item(i).setHidden(True)
 
-    def itemclick(self):
-        idx = self.useraccountsList.currentRow()
-        epw = self.userpasswords[idx][3]
-        pw = enc.decrypt_userpassword_password(epw, ActiveUser.getDK())
-        print(pw)
+    def copyPassword(self):
+        item = self.useraccountsList.currentRow()
+        epw= self.userpasswords[item][3]
+        pyperclip.copy(enc.decrypt_userpassword_password(epw, ActiveUser.decryptkey))
+        
 #---------------End Account Screen------------------------
 
 

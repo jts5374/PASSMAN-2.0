@@ -1,12 +1,13 @@
 import encryption as enc
+import sql
 class User:
     def __init__(self):
         self.username = ''
         self.decryptkey = ''
 
-    def login(self, username, password):
+    def login(self, username, password, qpassword):
         self.username = username
-        salt = enc.get_hashed_password_and_salt(username)[:29]
+        salt = qpassword[:29]
         dk = enc.generate_decrypt_key(password, salt)
         self.decryptkey = dk
 
