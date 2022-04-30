@@ -71,6 +71,7 @@ class Database:
         DELETE FROM userpasswords
         WHERE AccountEntry = ?
         """, (idx, ))
+        self.con.commit()
 
     #------------Retrieve-----------------
     def selectPassword(self, username):

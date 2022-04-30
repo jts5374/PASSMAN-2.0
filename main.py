@@ -6,8 +6,8 @@ from PyQt5 import QtGui
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDialog, QApplication, QListWidget, QMenu
-from PyQt5.QtCore import QEvent
+from PyQt5.QtWidgets import QDialog, QApplication, QListWidget, QMenu, QAction
+from PyQt5.QtCore import QEvent, Qt
 import tkinter
 from tkinter import filedialog
 import pyperclip
@@ -18,7 +18,7 @@ import encryption as enc
 
 ActiveUser = ua.User()
 
-
+width, height = 300,500
 #---------------------Login Screen---------------------------------------
 #Starting screen This is where users will log into their main account
 
@@ -30,7 +30,7 @@ class LoginScreen(QDialog):
         self.loginButton.clicked.connect(self.clickLogin)
         self.createaccountButton.clicked.connect(self.gotoCreateAccount)
         self.useexternalaccountButton.clicked.connect(self.getExternalDB)
-    
+        self.setMinimumSize(width, height-400)
     def clickLogin(self):
         username = self.usernameInput.text()
         pw = self.passwordInput.text()
@@ -77,6 +77,7 @@ class CreateAccountScreen(QDialog):
         self.errormessageLabel.setVisible(False)
         self.gobackButton.clicked.connect(self.goBack)
         self.createaccountButton.clicked.connect(self.createAccount)
+        self.setMinimumSize(width, height)
 
     def goBack(self):
         li = LoginScreen()
@@ -114,7 +115,9 @@ class AccountScreen(QDialog):
         self.addaccountButton.clicked.connect(self.gotoAddAccount)
         self.exportaccountButton.clicked.connect(self.ExportAccount)     
         self.userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
-        
+        self.setMinimumSize(width, height)
+
+
         for i,up in enumerate(self.userpasswords):
             item = QtWidgets.QListWidgetItem()
             item.setData(QtCore.Qt.UserRole, i)
@@ -123,10 +126,27 @@ class AccountScreen(QDialog):
             
             
         
-        self.useraccountsList.itemClicked.connect(self.copyPassword)
+        # self.useraccountsList.itemClicked.connect(self.copyPassword)
         self.searchBar.textChanged.connect(self.Search)
-        
 
+        self.useraccountsList.installEventFilter(self)
+        
+    def eventFilter(self, source, event):
+        if event.type() == QEvent.ContextMenu and source is self.useraccountsList and source.itemAt(event.pos()) is not None:
+            rcmenu = QtWidgets.QMenu()
+            rcmenu.addAction('Copy Password', self.copyPassword)
+            rcmenu.addAction('Change Password', self.changePassword)
+            rcmenu.addAction('Delete Password', self.deletePassword)
+
+            if rcmenu.exec_(event.globalPos()):
+                try:
+                    item = source.itemAt(event.pos())
+                    data = item.data(QtCore.Qt.UserRole)
+                except:
+                    pass
+            return True
+
+        return super().eventFilter(source, event)
     
     def logout(self):
         ActiveUser.logout()
@@ -161,9 +181,22 @@ class AccountScreen(QDialog):
                 self.useraccountsList.item(i).setHidden(True)
 
     def copyPassword(self):
-        item = self.useraccountsList.currentRow()
-        epw= self.userpasswords[item][3]
+        idx = self.useraccountsList.currentRow()
+        epw= self.userpasswords[idx][3]
         pyperclip.copy(enc.decrypt_userpassword_password(epw, ActiveUser.decryptkey))
+
+    def changePassword(self):
+        pass
+
+    def deletePassword(self):
+        idx = self.useraccountsList.currentRow()
+        dbidx = self.userpasswords[idx][0]
+        db.deleteUserPasswordsSite(dbidx)
+        refresh = AccountScreen()
+        widget.addWidget(refresh)
+        widget.setCurrentIndex(widget.currentIndex() + 1)
+        widget.removeWidget(self)
+        
         
 #---------------End Account Screen------------------------
 
@@ -182,6 +215,8 @@ class AddAccountScreen(QDialog):
         self.enablepasswordgencheckBox.stateChanged.connect(self.enablePWGen)        
         self.passwordlengthSlider.valueChanged.connect(self.updatePasswordLengthDisplay)
         self.addaccountButton.clicked.connect(self.AddAccount)
+        self.setMinimumSize(width, height)
+
 
     def enablePWGen(self):        
         self.passwordlengthSlider.setEnabled(self.enablepasswordgencheckBox.isChecked())
