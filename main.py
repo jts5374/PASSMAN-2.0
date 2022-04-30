@@ -6,7 +6,7 @@ from PyQt5 import QtGui
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QDialog, QApplication, QListWidget, QMenu, QAction
+from PyQt5.QtWidgets import QDialog, QApplication, QListWidget, QMenu, QAction, QLineEdit
 from PyQt5.QtCore import QEvent, Qt
 import tkinter
 from tkinter import filedialog
@@ -18,7 +18,7 @@ import encryption as enc
 
 ActiveUser = ua.User()
 
-width, height = 300,500
+width, height = 300,700
 #---------------------Login Screen---------------------------------------
 #Starting screen This is where users will log into their main account
 
@@ -31,6 +31,8 @@ class LoginScreen(QDialog):
         self.createaccountButton.clicked.connect(self.gotoCreateAccount)
         self.useexternalaccountButton.clicked.connect(self.getExternalDB)
         self.setMinimumSize(width, height-400)
+
+
     def clickLogin(self):
         username = self.usernameInput.text()
         pw = self.passwordInput.text()
@@ -76,8 +78,8 @@ class CreateAccountScreen(QDialog):
         loadUi((os.path.join(os.getcwd(), 'createAccountScreen.ui')), self)
         self.errormessageLabel.setVisible(False)
         self.gobackButton.clicked.connect(self.goBack)
-        self.createaccountButton.clicked.connect(self.createAccount)
-        self.setMinimumSize(width, height)
+        self.createaccountButton.clicked.connect(self.createAccount)        
+        self.setMinimumSize(width, height-400)
 
     def goBack(self):
         li = LoginScreen()
@@ -212,11 +214,30 @@ class AddAccountScreen(QDialog):
         value = self.passwordlengthSlider.value()
         self.passwordlengthLabel.setText(f"Password Length: {value}")
         self.gobackButton.clicked.connect(self.goBack)
-        self.enablepasswordgencheckBox.stateChanged.connect(self.enablePWGen)        
+        self.enablepasswordgencheckBox.stateChanged.connect(self.enablePWGen)
+        self.showpasswordcheckBox.stateChanged.connect(self.showPW)        
         self.passwordlengthSlider.valueChanged.connect(self.updatePasswordLengthDisplay)
         self.addaccountButton.clicked.connect(self.AddAccount)
+        self.generatepasswordButton.clicked.connect(self.generatePassword)
         self.setMinimumSize(width, height)
 
+
+    def generatePassword(self):
+        containsUppers = self.uppercasecheckBox.isChecked()
+        containsLower = self.lowercasecheckBox.isChecked()
+        containsNumbers = self.numberscheckBox.isChecked()
+        containsSymbols = self.symbolscheckBox.isChecked()
+        contains = [containsUppers, containsLower, containsNumbers, containsSymbols]
+        pwlen = self.passwordlengthSlider.value()
+        pw = enc.generatePassword(contains, pwlen)
+        self.passwordInput.setText(pw)
+        self.confirmpasswordInput.setText(pw)
+
+    def showPW(self):
+        if self.showpasswordcheckBox.isChecked():
+            self.passwordInput.setEchoMode(QLineEdit.EchoMode.Normal)
+        else:
+            self.passwordInput.setEchoMode(QLineEdit.EchoMode.Password)
 
     def enablePWGen(self):        
         self.passwordlengthSlider.setEnabled(self.enablepasswordgencheckBox.isChecked())
