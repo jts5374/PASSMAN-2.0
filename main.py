@@ -81,7 +81,6 @@ class LoginScreen(QDialog):
 
 #-------------End Login Screen----------------------------
 
-
 #-------------Create Account Screen-----------------------
 # This is where user will create main account to log into PassMan
 
@@ -320,8 +319,9 @@ class AddAccountScreen(QDialog):
 class DeleteAccountScreen(QDialog):
     def __init__(self) :
         super(DeleteAccountScreen, self).__init__()
-        loadUi((os.path.join(os.getcwd(), 'DeleteAccountScreen.ui')), self)   
-        self.deleteButton.clicked.connect(self.deleteAccount)
+        loadUi((os.path.join(os.getcwd(), 'deleteaccountScreen.ui')), self)   
+        self.deleteaccountButton.clicked.connect(self.deleteAccount)
+        self.gobackButton.clicked.connect(self.goBack)
         self.errormessageLabel.setVisible(False)
 
     def deleteAccount(self):
@@ -329,20 +329,27 @@ class DeleteAccountScreen(QDialog):
         pw = self.passwordInput.text()
         cpw = self.confirmpasswordInput.text()
         dbpw = db.selectPassword(username)
-        self.setMaximumSize(width, height-400)
-        if pw == cpw:
-            if enc.check_password(pw, dbpw):
-                db.deleteUserAccount(username)
-                login = LoginScreen()
-                NewScreen(self, login)
+        
+        if username and pw and cpw:
+            if db.user_exists(username):
+                if pw == cpw:
+                    if enc.check_password(pw, dbpw):
+                        db.deleteUserAccount(username)
+                        login = LoginScreen()
+                        NewScreen(self, login)
+                    else:
+                        self.errormessageLabel.setText("Incorrect Password")
+                        self.errormessageLabel.setVisible(True)
+                else:
+                    self.errormessageLabel.setText("Passwords do not Match")
+                    self.errormessageLabel.setVisible(True)
             else:
-                self.errormessageLabel.setText("Incorrect Password")
+                self.errormessageLabel.setText("User does not exist")
                 self.errormessageLabel.setVisible(True)
-        else:
-            self.errormessageLabel.setText("Passwords do not Match")
-            self.errormessageLabel.setVisible(True)
 
-
+    def goBack(self):
+        li = LoginScreen()
+        NewScreen(self, li)
 
 #------------------End Delete Account Screen-------------------------
 
