@@ -22,3 +22,4 @@ Current functions:
  - Update Master Password functionality, reencrypts and updates all site passwords under account with new decryption key
 
        
+ - Portable branch has minor changes to store database file in same folder as application to run from anywhere
