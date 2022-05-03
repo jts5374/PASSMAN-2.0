@@ -1,4 +1,4 @@
-# PASSMAN-2.0
+# PASSMAN
 Making passman application with UI and more functionality
 Current functions:  
 
@@ -20,5 +20,5 @@ Current functions:
 	
 	 - Ability to export all account data to external storage for mobility
  - Update Master Password functionality, reencrypts and updates all site passwords under account with new decryption key
- - 
+
        
