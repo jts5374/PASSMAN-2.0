@@ -123,6 +123,15 @@ class Database:
         self.con.commit()
 
 
+    def updateMasterPW(self, dk, newpw ):
+        """
+        store old dk
+        get all sitepasswords        
+        generate new hashed and salted password
+        generate new dk with salt and new password
+        decrypt current password, reencrypt with new dk and update userpasswords table
+        
+        """
     #------------Export function-----------
 
     def createInsertStatement(self, masteraccountData, upPasswordData):
