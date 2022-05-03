@@ -14,6 +14,7 @@ class User:
     def logout(self):
         self.username = ''
         self.decryptkey = ''
+        
 
     def getUser(self):
         return self.username

@@ -4,7 +4,7 @@ import os
 
 class Database:
     def __init__(self) -> None:
-        self.dbpath = os.path.dirname(os.path.realpath(__file__))
+        self.dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'passMan.db')
         self.setConnection()
         
 
@@ -17,7 +17,7 @@ class Database:
         self.setConnection()
 
     def setConnection(self):
-        self.con = sqlite3.connect(os.path.join(self.dbpath, 'passMan.db'))
+        self.con = sqlite3.connect(self.dbpath)
         self.cur = self.con.cursor()
 
     def initialize_db(self):        

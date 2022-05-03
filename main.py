@@ -37,7 +37,7 @@ class LoginScreen(QDialog):
         self.createaccountButton.clicked.connect(self.gotoCreateAccount)
         self.useexternalaccountButton.clicked.connect(self.getExternalDB)
         self.deleteaccountButton.clicked.connect(self.gotoDeleteAccount)
-        self.setFixedSize(width, height-400)
+        
         self.setContentsMargins
 
 
@@ -45,22 +45,22 @@ class LoginScreen(QDialog):
         username = self.usernameInput.text()
         pw = self.passwordInput.text()
         
-        
-        if db.user_exists(username):
-            dbpw = db.selectPassword(username)
-            if enc.check_password(pw, dbpw):
-                ActiveUser.login(username, pw, dbpw) 
-                    
-                acc = AccountScreen()
-                widget.addWidget(acc)
-                widget.setCurrentIndex(widget.currentIndex() + 1)
-                widget.removeWidget(self)
+        if username:
+            if db.user_exists(username):
+                dbpw = db.selectPassword(username)
+                if enc.check_password(pw, dbpw):
+                    ActiveUser.login(username, pw, dbpw) 
+                        
+                    acc = AccountScreen()
+                    widget.addWidget(acc)
+                    widget.setCurrentIndex(widget.currentIndex() + 1)
+                    widget.removeWidget(self)
+                else:
+                    self.errormessageLabel.setText("Password is incorrect")
+                    self.errormessageLabel.setVisible(True)
             else:
-                self.errormessageLabel.setText("Password is incorrect")
+                self.errormessageLabel.setText("Username does not exist")
                 self.errormessageLabel.setVisible(True)
-        else:
-            self.errormessageLabel.setText("Username does not exist")
-            self.errormessageLabel.setVisible(True)
 
     def gotoCreateAccount(self):
         ca = CreateAccountScreen()
@@ -68,10 +68,12 @@ class LoginScreen(QDialog):
 
     def getExternalDB(self):
         tkinter.Tk().withdraw()
-        dbpath = filedialog.askdirectory()
-        db.setPath(dbpath)
-        db.initialize_db()
-        db.setConnection()
+        dbpath = filedialog.askopenfilename(title = 'Please select your external account location', filetypes=[('Database Files', ['.db'])])
+        if dbpath:
+            filepath = os.path.abspath(dbpath)            
+            db.setPath(filepath)
+            db.initialize_db()
+            db.setConnection()
 
     def gotoDeleteAccount(self):
         da = DeleteAccountScreen()
@@ -125,6 +127,7 @@ class AccountScreen(QDialog):
         self.logoutButton.clicked.connect(self.logout)
         self.addaccountButton.clicked.connect(self.gotoAddAccount)
         self.exportaccountButton.clicked.connect(self.ExportAccount)     
+        self.updatemasterpasswordButton.clicked.connect(self.gotoUpdatePassword)
         self.userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
         self.setMinimumSize(width, height)
 
@@ -163,11 +166,17 @@ class AccountScreen(QDialog):
     def logout(self):
         ActiveUser.logout()
         li = LoginScreen()
+        db.setPath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'passMan.db'))
+        db.setConnection()
         NewScreen(self, li)
 
     def gotoAddAccount(self):
         aa = AddAccountScreen()
         NewScreen(self, aa)
+
+    def gotoUpdatePassword(self):
+        up = UpdatePasswordScreen()
+        NewScreen(self, up)
 
     def ExportAccount(self):
         masteraccount = db.getMasterAccount(ActiveUser.getUser())
@@ -335,6 +344,19 @@ class DeleteAccountScreen(QDialog):
 
 #------------------End Delete Account Screen-------------------------
 
+#-------------------Update Password Screen --------------------------
+class UpdatePasswordScreen(QDialog):
+    def __init__(self) :
+        super(UpdatePasswordScreen, self).__init__()
+        loadUi((os.path.join(os.getcwd(), 'UpdatePasswordScreen.ui')), self)   
+        self.gobackButton.clicked.connect(self.goBack)
+
+    def goBack(self):
+        acc = AccountScreen()
+        NewScreen(self, acc)
+
+
+#-------------------End Update Password Screen --------------------------
 
 if __name__=='__main__':
     db = sql.Database()
