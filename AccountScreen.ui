@@ -136,7 +136,11 @@
  </widget>
  <tabstops>
   <tabstop>searchBar</tabstop>
+  <tabstop>useraccountsList</tabstop>
   <tabstop>addaccountButton</tabstop>
+  <tabstop>exportaccountButton</tabstop>
+  <tabstop>logoutButton</tabstop>
+  <tabstop>updatemasterpasswordButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

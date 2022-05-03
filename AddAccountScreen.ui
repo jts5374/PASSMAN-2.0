@@ -350,6 +350,7 @@
   <tabstop>usernameInput</tabstop>
   <tabstop>passwordInput</tabstop>
   <tabstop>confirmpasswordInput</tabstop>
+  <tabstop>showpasswordcheckBox</tabstop>
   <tabstop>enablepasswordgencheckBox</tabstop>
   <tabstop>passwordlengthSlider</tabstop>
   <tabstop>uppercasecheckBox</tabstop>

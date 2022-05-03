@@ -259,6 +259,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>usernameInput</tabstop>
+  <tabstop>passwordInput</tabstop>
+  <tabstop>confirmpasswordInput</tabstop>
+  <tabstop>deleteaccountButton</tabstop>
+  <tabstop>gobackButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

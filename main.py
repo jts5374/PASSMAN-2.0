@@ -165,7 +165,7 @@ class AccountScreen(QDialog):
     def logout(self):
         ActiveUser.logout()
         li = LoginScreen()
-        db.setPath(os.path.join(os.path.join(os.getenv('LOCALAPPDATA'),'PassMan')))
+        db.setPath((os.path.join(os.getenv('LOCALAPPDATA'),'PassMan', 'passman.db')))
         db.setConnection()
         NewScreen(self, li)
 
