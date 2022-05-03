@@ -183,11 +183,13 @@ class AccountScreen(QDialog):
         userpasswords = db.selectuserPasswordsData(ActiveUser.getUser())
         export = sql.Database()
         tkinter.Tk().withdraw()
-        dbpath = filedialog.askdirectory()
-        export.setPath(dbpath)
-        export.initialize_db()
-        export.setConnection()
-        export.createInsertStatement(masteraccount, userpasswords)
+        dbpath = filedialog.asksaveasfilename(defaultextension=".db")
+        if dbpath:
+            filepath = os.path.abspath(dbpath)
+            export.setPath(filepath)
+            export.initialize_db()
+            export.setConnection()
+            export.createInsertStatement(masteraccount, userpasswords)
     
     def Search(self):
         searchterm = self.searchBar.text()
