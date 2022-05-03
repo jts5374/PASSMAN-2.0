@@ -4,6 +4,7 @@ Current functions:
 
  - Create Account, stores username and hashed and salted password in database for user authentication
  - User account login
+ - All site passwords encrypted in database, can only be accessed with decryption key generated at login
  - Ability to read database from non-default location
    - Allows you to bring your passwords with you, accessible anywhere PassMan is installed 
  - Delete Account, removes Master account and all associated login credentials from database
@@ -18,5 +19,6 @@ Current functions:
 	 - password generator to generate more complex passwords using preselected criteria (Password length, Include uppercase, lowercase, numbers or symbols)
 	
 	 - Ability to export all account data to external storage for mobility
-
+ - Update Master Password functionality, reencrypts and updates all site passwords under account with new decryption key
+ - 
        
