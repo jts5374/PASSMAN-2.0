@@ -1,6 +1,7 @@
 from doctest import master
 import sqlite3 
 import os
+import encryption as enc
 
 class Database:
     def __init__(self) -> None:
@@ -122,16 +123,36 @@ class Database:
         """, (pw, idx))
         self.con.commit()
 
+    
+    def changeMasterPW(self, hpw, username):
+        self.cur.execute("""
+        Update Accounts
+        Set MasterPassword = ?
+        WHERE UserName = ?        
+        """, (hpw, username,))
+        self.con.commit()
 
-    def updateMasterPW(self, dk, newpw ):
+    def updateMasterPW(self, dk, newpw, username, db):
         """
         store old dk
         get all sitepasswords        
         generate new hashed and salted password
         generate new dk with salt and new password
         decrypt current password, reencrypt with new dk and update userpasswords table
-        
+
         """
+        newpwhashed = enc.get_hashed_password_and_salt(newpw)
+        newdk = enc.generate_decrypt_key(newpw, newpwhashed[:29])
+        sitepws = db.selectuserPasswordsData(username)
+        for sitepw in sitepws:
+            idx = sitepw[0]
+            epw = sitepw[3]
+            dpw = enc.decrypt_userpassword_password(epw, dk)
+            newepw = enc.encrypt_userpasswords_password(dpw, newdk)
+            db.updateSiteInfo(idx, newepw)
+        db.changeMasterPW(newpwhashed, username)
+    
+        
     #------------Export function-----------
 
     def createInsertStatement(self, masteraccountData, upPasswordData):

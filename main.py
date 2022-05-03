@@ -350,11 +350,34 @@ class UpdatePasswordScreen(QDialog):
         super(UpdatePasswordScreen, self).__init__()
         loadUi((os.path.join(os.getcwd(), 'UpdatePasswordScreen.ui')), self)   
         self.gobackButton.clicked.connect(self.goBack)
+        self.errormessageLabel.setVisible(False)
+        self.updatepasswordButton.clicked.connect(self.updateMasterPassword)
 
     def goBack(self):
         acc = AccountScreen()
         NewScreen(self, acc)
 
+    def updateMasterPassword(self):
+        cpw= self.currentpasswordInput.text()
+        npw= self.newpasswordInput.text()
+        cnpw= self.confirmnewpasswordInput.text()
+
+        if cpw and npw and cnpw: 
+            if not enc.check_password(cpw, db.selectPassword(ActiveUser.username)):
+                self.errormessageLabel.setText('Current Password is Incorrect')
+                self.errormessageLabel.setVisible(True)
+            elif npw != cnpw:
+                self.errormessageLabel.setText('Passwords do not match')
+                self.errormessageLabel.setVisible(True)
+            else:
+                db.updateMasterPW(ActiveUser.decryptkey, npw, ActiveUser.username, db)
+                ActiveUser.login(ActiveUser.username, npw, db.selectPassword(ActiveUser.username))
+                acc = AccountScreen()
+                NewScreen(self, acc)
+
+        else:
+            self.errormessageLabel.setText('All Input Fields must be completed')
+            self.errormessageLabel.setVisible(True)
 
 #-------------------End Update Password Screen --------------------------
 
