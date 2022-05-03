@@ -2,12 +2,11 @@ from doctest import master
 import sqlite3 
 import os
 import encryption as enc
-defaultdbpath =  os.path.join(os.getenv('LOCALAPPDATA'),'PassMan')
+defaultdbpath =  os.path.join(os.path.dirname(os.path.realpath(__file__)), 'passMan.db')
 class Database:
     def __init__(self) -> None:
-        if not os.path.exists(defaultdbpath):
-            os.mkdir(defaultdbpath)
-        self.dbpath = os.path.join(os.getenv('LOCALAPPDATA'),'PassMan', 'passMan.db')
+        
+        self.dbpath = defaultdbpath
         self.setConnection()
         
 
