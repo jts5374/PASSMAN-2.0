@@ -5,7 +5,7 @@ import encryption as enc
 
 class Database:
     def __init__(self) -> None:
-        self.dbpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'passMan.db')
+        self.dbpath = os.path.join(os.getenv('LOCALAPPDATA'),'PassMan', 'passMan.db')
         self.setConnection()
         
 
