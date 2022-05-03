@@ -1,3 +1,7 @@
 passman.db
 __pycache__/*
 
+dist/*
+build/*
+main.spec
+INNO/*
